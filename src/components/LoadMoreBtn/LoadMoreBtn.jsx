@@ -1,10 +1,10 @@
 
 
 
-const LoadMoreBtn = () => {
+const LoadMoreBtn = ({load}) => {
   return (
       <div>
-          <button>Load more</button>
+          <button onClick={load}>Load more</button>
     </div>
   )
 }

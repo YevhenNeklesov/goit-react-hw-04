@@ -2,7 +2,7 @@
 
 import { Formik, Form, Field} from 'formik'
 
-const SearchBar = ({ setQuery, getData }) => {
+const SearchBar = ({ setQuery }) => {
     const initialValues = {
         query: '',
     }
@@ -20,7 +20,7 @@ const SearchBar = ({ setQuery, getData }) => {
                       autoFocus
                       placeholder="Search images and photos"
                       name='query' />
-                  <button type='submit' onClick={getData}>Search</button>
+                  <button type='submit'>Search</button>
               </Form>
           </Formik>
     </div>
