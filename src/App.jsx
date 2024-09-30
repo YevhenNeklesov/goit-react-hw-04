@@ -33,6 +33,7 @@ function App() {
       const getData = async () => {
         try {
           setIsLoading(true)
+
           const data = await fetchArticles(query, page)
           !data.results.length && toast("Sorry we have no image by your search")
           setArticles(prev => [...prev, ...data.results])
@@ -48,9 +49,9 @@ function App() {
   
   const handleNextPage = () => {
     try {
-          console.log(`Current page: ${page}`)
           setPage(prev => prev + 1)
-          setIsLoading(true)
+      setIsLoading(true)
+      setTotalPages(0)
     } catch {
           setIsError(true)
     }

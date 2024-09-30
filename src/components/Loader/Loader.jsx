@@ -1,19 +1,21 @@
-import { Audio } from 'react-loader-spinner'
-
+import { RotatingLines } from 'react-loader-spinner'
+import s from "./Loader.module.css"
 const Loader = () => {
     
 
   return (
-      <div>
-         <Audio
-  height="80"
-  width="80"
-  radius="9"
-  color="green"
-  ariaLabel="loading"
-  wrapperStyle
-  wrapperClass
-/> 
+      <div className={s.div}>
+<RotatingLines 
+  visible={true}
+  height="35"
+  width="35"
+  color="gr"
+  strokeWidth="5"
+  animationDuration="0.75"
+  ariaLabel="rotating-lines-loading"
+  wrapperStyle={{}}
+  wrapperClass={s.loader}
+  />
     </div>
   )
 }
