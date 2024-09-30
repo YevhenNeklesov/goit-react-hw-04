@@ -4,16 +4,13 @@ import SearchBar from "./components/SearchBar/SearchBar";
 import ImageGallery from "./components/ImageGallery/ImageGallery";
 import LoadMoreBtn from "./components/LoadMoreBtn/LoadMoreBtn";
 import Loader from "./components/Loader/Loader";
-
-import toast, { Toaster } from "react-hot-toast";
+import toast, {Toaster} from "react-hot-toast";
 import { ErrorMessage } from "formik";
-import React from 'react';
 import ImageModal from "./components/ImageModal/ImageModal";
+import React from 'react';
 
 
-// import ReactModal from "react-modal";
-// import Modal from 'react-modal';
-// import ReactDOM from 'react-dom';
+
 
 
 function App() {
@@ -21,9 +18,11 @@ function App() {
   const [articles, setArticles] = useState([])
   const [query, setQuery] = useState('')
   const [page, setPage] = useState(0)
-  const [more, setMore] = useState()
+  const [totalPages, setTotalPages] = useState(0)
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
+  const [modalIsOpen, setIsOpen] = React.useState(false);
+  const [selectedArticle, setSelectedArticle] = useState()
 
   useEffect(() => {
 
@@ -35,12 +34,10 @@ function App() {
         try {
           setIsLoading(true)
           const data = await fetchArticles(query, page)
-          !data.results.length && toast("Sorry we have no image for you")
+          !data.results.length && toast("Sorry we have no image by your search")
           setArticles(prev => [...prev, ...data.results])
-          console.log(data);
-          data.total_pages <= page + 1 ? setMore(false) : setMore(true)      
-        } catch (error) {
-          console.log(error);
+          setTotalPages(data.total_pages)    
+        } catch {
           setIsError(true)
         } finally {
           setIsLoading(false)
@@ -49,7 +46,6 @@ function App() {
     getData()
   }, [page, query])
   
-
   const handleNextPage = () => {
     try {
           console.log(`Current page: ${page}`)
@@ -63,29 +59,38 @@ function App() {
   const handleSetQuery = searchValue => {
     setQuery(searchValue)
     setArticles([])
-    setPage(0)
+    setPage(1)
   }
 
 
-  const [modalIsOpen, setIsOpen] = React.useState(false);
+  
 
-  function openModal() {
+  function openModal(item) {
     setIsOpen(true);
+    setSelectedArticle(item)
+
   }
 
   function closeModal() {
     setIsOpen(false);
+    setSelectedArticle(null)
   }
 
 
   return (
     <div>
-      <SearchBar  setQuery={handleSetQuery} />
-      {articles.length > 0 && <ImageGallery openModal={openModal} articles={articles} />}
+      <SearchBar setQuery={handleSetQuery} />
+      <Toaster/>
+      {articles.length > 0 && <ImageGallery selectedArticle={selectedArticle} openModal={openModal} articles={articles} />}
       {isLoading && <Loader />}
       {isError && <ErrorMessage/>}
-      {more && <LoadMoreBtn load={handleNextPage} />}
-      {modalIsOpen && <ImageModal  closeModal={closeModal}/>}
+      {page < totalPages && <LoadMoreBtn load={handleNextPage} />}
+      {modalIsOpen &&
+        <ImageModal
+        modalIsOpen={modalIsOpen}
+        closeModal={closeModal}
+        article={selectedArticle}
+      />}
   </div>
   )
 }
