@@ -5,7 +5,7 @@ import ImageGallery from "./components/ImageGallery/ImageGallery";
 import LoadMoreBtn from "./components/LoadMoreBtn/LoadMoreBtn";
 import Loader from "./components/Loader/Loader";
 import toast, {Toaster} from "react-hot-toast";
-import { ErrorMessage } from "formik";
+import  ErrorMessage from "./components/ErrorMessege/ErrorMessege";
 import ImageModal from "./components/ImageModal/ImageModal";
 import React from 'react';
 
@@ -26,19 +26,24 @@ function App() {
 
   useEffect(() => {
 
-        if (!query) {
+    if (!query) {
+          
       return;
     }
 
       const getData = async () => {
         try {
+          setIsError(false)
           setIsLoading(true)
-
           const data = await fetchArticles(query, page)
-          !data.results.length && toast("Sorry we have no image by your search")
+          !data.results.length && toast("Sorry we have no image by your search", {
+            duration: '400',
+            position: 'top-right'
+          })
           setArticles(prev => [...prev, ...data.results])
           setTotalPages(data.total_pages)    
-        } catch {
+        } catch (err) {
+          console.log(err);
           setIsError(true)
         } finally {
           setIsLoading(false)
@@ -81,7 +86,6 @@ function App() {
   return (
     <div>
       <SearchBar setQuery={handleSetQuery} />
-      <Toaster/>
       {articles.length > 0 && <ImageGallery selectedArticle={selectedArticle} openModal={openModal} articles={articles} />}
       {isLoading && <Loader />}
       {isError && <ErrorMessage/>}
@@ -91,7 +95,8 @@ function App() {
         modalIsOpen={modalIsOpen}
         closeModal={closeModal}
         article={selectedArticle}
-      />}
+        />}
+      <Toaster/>
   </div>
   )
 }
